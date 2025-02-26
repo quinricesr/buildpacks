@@ -61,6 +61,8 @@ func TestAcceptance(t *testing.T) {
 		{
 			Name: "function with framework and dependency bin",
 			App:  "with_framework_bin_conflict",
+			// TODO(harisam): Remove this constraint once spacy support is added for python 3.13.
+			VersionInclusionConstraint: "< 3.13.0",
 		},
 		{
 			Name:   "function with runtime env var",
@@ -75,7 +77,7 @@ func TestAcceptance(t *testing.T) {
 			SkipStacks: []string{"google.min.22"},
 		},
 	}
-	for _, tc := range testCases {
+	for _, tc := range acceptance.FilterTests(t, imageCtx, testCases) {
 		tc := applyStaticTestOptions(tc)
 		t.Run(tc.Name, func(t *testing.T) {
 			// Running these tests in parallel causes the server to run out of disk space.
